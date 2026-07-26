@@ -1,0 +1,50 @@
+species,region,type,right_side_count,left_side_count
+sweat bee,MBUv,glomeruli,32,30
+sweat bee,MBUv,ER,22,27
+sweat bee,MBUv,TUBU,Na,15
+sweat bee,MBUd,glomeruli,56,49
+sweat bee,MBUd,ER,62,54
+sweat bee,MBUd,TUBU,Na,46
+sweat bee,LBU,glomeruli,Na,Na
+sweat bee,LBU,ER,51,64
+sweat bee,LBU,TUBU,Na,Na
+sweat bee,LAL,ER,20,21
+honeybee,MBUv,glomeruli,104,Na
+honeybee,MBUv,ER,36,Na
+honeybee,MBUv,TUBU,14,Na
+honeybee,MBUd,glomeruli,69,Na
+honeybee,MBUd,ER,38,Na
+honeybee,MBUd,TUBU,34,Na
+honeybee,LBU,glomeruli,81,Na
+honeybee,LBU,ER,62,Na
+honeybee,LBU,TUBU,40,Na
+honeybee,LAL,ER,6,Na
+army ant,MBU,glomeruli,65,54
+army ant,MBU,ER,77,85
+army ant,MBU,TUBU,45,47
+army ant,LBU,glomeruli,46,42
+army ant,LBU,ER,33,38
+army ant,LBU,TUBU,19,40
+army ant,aglomerular,ER,25,25
+army ant,aglomerular,TUBU,10,7
+army ant,LAL,ER,8,10
+jumper ant,MBU,glomeruli,51,Na
+jumper ant,MBU,ER,38,Na
+jumper ant,MBU,TUBU,26,Na
+jumper ant,LBU,glomeruli,78,Na
+jumper ant,LBU,ER,63,Na
+jumper ant,LBU,TUBU,84,Na
+jumper ant,PBU,glomeruli,52,Na
+jumper ant,PBU,ER,51,Na
+jumper ant,PBU,TUBU,54,Na
+jumper ant,LAL,ER,15,Na
+fly,BUa,glomeruli,6,Na
+fly,BUa,ER,7,Na
+fly,BUa,TUBU,5,Na
+fly,BUi,glomeruli,35,Na
+fly,BUi,ER,41,Na
+fly,BUi,TUBU,28,Na
+fly,BUs,glomeruli,44,Na
+fly,BUs,ER,54,Na
+fly,BUs,TUBU,41,Na
+fly,LAL,ER,27,Na
