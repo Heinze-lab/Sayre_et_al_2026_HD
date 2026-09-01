@@ -2,7 +2,4 @@ syntables/table_csv_files/
 analysis/.ipynb_checkpoints/
 analysis/plots/
 analysis/edc_tables/
-model/plots/
-model/model_connectivity_tables/
-model/simulation_results/
 not_used/
