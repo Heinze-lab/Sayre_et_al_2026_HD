@@ -5,7 +5,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from tqdm.notebook import tqdm
 from cx import extrapolation
 
-CELLS = pl.read_parquet("data/input/bee-cells.parquet")
+CELLS = pl.read_parquet("../data/connectome/bee-cells.parquet")
 
 # Define neuropils
 ROIS = ["PB", "EB"]
@@ -174,7 +174,7 @@ PROJECTIONS
 
 cell_types = CELLS["type"].unique()
 conns = (
-    pl.read_csv("data/input/bee_conntable.csv")
+    pl.read_csv("../data/connectome/bee_conntable.csv")
     .with_columns(
         type_pre_col = pl.col("type_pre_col").replace({ "EPG_L_R1L1": "EPG_L1", "EPG_R_R1L1": "EPG_R1" }),
         type_post_col = pl.col("type_post_col").replace({ "EPG_L_R1L1": "EPG_L1", "EPG_R_R1L1": "EPG_R1" }),

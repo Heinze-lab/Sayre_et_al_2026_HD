@@ -6,6 +6,7 @@ import pickle
 from itertools import product
 from tqdm.notebook import tqdm
 import sys
+import os
 
 from cx.model import *
 
@@ -28,16 +29,12 @@ CW_SPEED_VAR = 12
 MIN_ROTATION_AMP = 13
 SPEED_VAR = 14
 
-if __name__ == "__main__":
-    model_name = sys.argv[1]
-    model = Model(f"data/{model_name[:3]}-cells.csv", f"data/{model_name}.npy", model_name)
+def compute_loss(model, data):
+    filename = f"../results/data/tuning/{model.name}_loss.npy"
+    if os.path.isfile(filename):
+        return np.load(filename)
 
-    #with open(f"data/tuning/{model_name}_E=0.06309573444801933..6.309573444801933_I=0.1..10.0_bias=-0.25..-0.25_compass=1.0..1.0.pkl", "rb") as f:
-    with open(f"data/tuning/{model_name}_E=0.1..10.0_I=0.1..10.0_bias=-0.5..-0.5_compass=1.0..1.0.pkl", "rb") as f:
-        data = pickle.load(f)
-        
     parameters = list(product(data["Es"], data["Is"], data["biases"], data["compass_strengths"]))
-
     loss = np.nan * np.zeros((SPEED_VAR + 1, len(data["Es"]), len(data["Is"]), len(data["biases"]), len(data["compass_strengths"])))
 
     for i, (params, (equilibria, ring, ring_speed)) in enumerate(zip(tqdm(parameters), data["grid"])):
@@ -46,8 +43,6 @@ if __name__ == "__main__":
         if len(ring) == 0 or ring.shape[1] == 0:
             continue
 
-        #params = [*params]
-        #params[2] = 0.22222222
         m = model.tune(params)
         n = ring.shape[1]
 
@@ -71,7 +66,7 @@ if __name__ == "__main__":
 
         loss[MEAN_SPECTRAL_GAP,*index] = mean_gap
 
-        loss[NUM_EQUILIBRIA,*index] = np.sum(ring_mask) #equilibria.shape[1]
+        loss[NUM_EQUILIBRIA,*index] = np.sum(ring_mask)
         pva = m.decode(ring)
         loss[BIAS,*index] = np.abs(np.sum(pva) / n)
         loss[AMP_MIN,*index] = np.min(np.abs(pva))
@@ -101,12 +96,85 @@ if __name__ == "__main__":
             loss[CW_SPEED_MIN,*index] = np.min(-dadt)
             loss[MIN_ROTATION_AMP,*index] = np.minimum(loss[MIN_ROTATION_AMP,*index], np.min(np.abs(m.decode(cycle))))
 
-        cycles =  0
-        for s in np.linspace(0.2, 2.0, 10.0):
-            _, is_cycle = trace_cycle(m, equilibria, rotation=s * cw_rotation, dt=0.1, max_steps=10000)
-            if is_cycle:
-                cycles += 1
-        loss[INTEGRATION_RANGE,*index] = cycles
+    np.save(filename, loss)
+    return loss
 
 
-    np.save(f"data/tuning/{model_name}_loss.npy", loss)
+def plot_loss(model, Es, Is, slice, best):
+    fig, axes = plt.subplots(3, 5, figsize=(20, 10))
+    axes = axes.flatten()
+
+    for ax in axes:
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.set_xlabel("$E$")
+        ax.set_ylabel("$I$")
+
+    X, Y = np.meshgrid(Es, Is)
+
+    axes[NUM_EQUILIBRIA].set_title("equilibria count")
+    c = axes[NUM_EQUILIBRIA].pcolormesh(X, Y, slice[NUM_EQUILIBRIA,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[MEAN_SPECTRAL_GAP].set_title("mean spectral gap")
+    c = axes[MEAN_SPECTRAL_GAP].pcolormesh(X, Y, slice[MEAN_SPECTRAL_GAP,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[BIAS].set_title("ring bias")
+    c = axes[BIAS].pcolormesh(X, Y, slice[BIAS,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[AMP_MIN].set_title("amplitude min")
+    c = axes[AMP_MIN].pcolormesh(X, Y, slice[AMP_MIN,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[AMP_MAX].set_title("amplitude max")
+    c = axes[AMP_MAX].pcolormesh(X, Y, slice[AMP_MAX,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[AMP_VAR].set_title("amplitude variance")
+    c = axes[AMP_VAR].pcolormesh(X, Y, slice[AMP_VAR,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[INTEGRATION_RANGE].set_title("angular integration range")
+    c = axes[INTEGRATION_RANGE].pcolormesh(X, Y, slice[INTEGRATION_RANGE,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[CCW_SPEED_VAR].set_title("counter-clockwise da/dt norm variance")
+    c = axes[CCW_SPEED_VAR].pcolormesh(X, Y, slice[CCW_SPEED_VAR,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[CW_SPEED_VAR].set_title("clockwise da/dt norm variance")
+    c = axes[CW_SPEED_VAR].pcolormesh(X, Y, slice[CW_SPEED_VAR,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[CCW_SPEED_MIN].set_title("counter-clockwise da/dt norm min")
+    c = axes[CCW_SPEED_MIN].pcolormesh(X, Y, slice[CCW_SPEED_MIN,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[CW_SPEED_MIN].set_title("clockwise da/dt norm min")
+    c = axes[CW_SPEED_MIN].pcolormesh(X, Y, slice[CW_SPEED_MIN,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[MIN_ROTATION_AMP].set_title("min rotation bump amplitude")
+    c = axes[MIN_ROTATION_AMP].pcolormesh(X, Y, slice[MIN_ROTATION_AMP,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[SPEED_MAX].set_title("du/dt norm max")
+    c = axes[SPEED_MAX].pcolormesh(X, Y, slice[SPEED_MAX,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[ANGULAR_SPEED_MAX].set_title("da/dt norm max")
+    c = axes[ANGULAR_SPEED_MAX].pcolormesh(X, Y, slice[ANGULAR_SPEED_MAX,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    axes[SPEED_VAR].set_title("du/dt norm variance")
+    c = axes[SPEED_VAR].pcolormesh(X, Y, slice[SPEED_VAR,...].T, rasterized=True, shading="nearest")
+    plt.colorbar(c)
+
+    for ax in axes:
+        ax.scatter(best[0], best[1], marker="+", c="red")
+
+    plt.tight_layout()
+    plt.savefig(f"../results/{model.name}-loss.pdf")
+    #plt.show()
