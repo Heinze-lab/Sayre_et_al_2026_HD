@@ -15,7 +15,7 @@ from cx.math import wrap_nans
 
 
 def load_or_create(model: Model, experiment_name: str, generator: Callable[[Model], Any], **kwargs) -> Any:
-    filename = f"data/experiments/{model.name}-{experiment_name}.pkl"
+    filename = f"../results/data/experiments/{model.name}-{experiment_name}.pkl"
     try:
         with open(filename, "rb") as f:
             print(f"loading {experiment_name} data for {model.name} from {filename}...")
@@ -45,7 +45,7 @@ def generate_trajectories(model: Model, bump_shaped = True):
     return trajectories
 
 def plot_trajectories(model: Model):
-    filename = f"results/experiments/{model.name}-trajectories.pdf"
+    filename = f"../results/experiments/{model.name}-trajectories.pdf"
     if not os.path.isfile(filename):
         trajectories_bump = load_or_create(model, "trajectories", lambda m: generate_trajectories(m, bump_shaped=True))
         trajectories_random = load_or_create(model, "trajectories-random", lambda m: generate_trajectories(m, bump_shaped=False))
@@ -81,71 +81,8 @@ def plot_trajectories(model: Model):
         plt.tight_layout()
         plt.savefig(filename)
 
-def export_trajectories(model: Model):
-    filename = f"results/export/{model.name}-trajectories.parquet"
-    if not os.path.isfile(filename):
-        trajectories_bump = load_or_create(model, "trajectories", lambda m: generate_trajectories(m, bump_shaped=True))
-        pva_trajectories = [model.decode(trajectory) for trajectory in trajectories_bump]
-        df = pl.DataFrame({
-            "theta": pl.Series(np.angle(pva_trajectories), dtype=pl.Array(pl.Float32, len(pva_trajectories[0]))),
-            "r": pl.Series(np.abs(pva_trajectories), dtype=pl.Array(pl.Float32, len(pva_trajectories[0]))),
-        })
-        df.show(None)
-        df.write_parquet(filename)
-
-def export_equilibria(model: Model) -> np.array:
-    filename = f"results/export/{model.name}-equilibria.parquet"
-    if os.path.isfile(filename):
-        return
-
-    equilibria = find_equilibria(model, n_theta=50, n_r=20, threshold=0.01, dt=0.1)
-    pva = model.decode(equilibria)
-    print(pva.shape)
-    
-    stable = []
-    for s in equilibria.T.tolist():
-        eigvals, eig = np.linalg.eig(model.jacobian(s, model.compass_current(0, 0)))
-
-        if np.all(np.real(eigvals) < 0):
-            stable.append(True)
-        else:
-            stable.append(False)
-
-    df = pl.DataFrame({
-        "stable": stable,
-        "theta": np.angle(pva),
-        "r": np.abs(pva),
-        "state": pl.Series(equilibria.T, dtype=pl.Array(pl.Float32, len(model.cells))),
-    })
-    df.show(None)
-    df.write_parquet(filename)
-
-def export_manifold(model: Model) -> np.array:
-    filename = f"results/export/{model.name}-ring.parquet"
-    if os.path.isfile(filename):
-        return
-
-    equilibria = find_equilibria(model, n_theta=50, n_r=20, threshold=0.01, dt=0.1)
-    ring, _ = trace_ring(model, equilibria, start_offset=0.01, trace_step=0.05)
-    ring_pva = model.decode(ring)
-    ring_dudt = model.dudt(ring, model.compass_current(np.zeros(ring.shape[1]), 0.0))
-    ring_dudt_pva = model.decode(ring + ring_dudt * 0.01) - ring_pva
-    ring_dudt_pva /= np.abs(ring_dudt_pva)
-    dadt = model.dangledt(ring, model.dudt(ring, model.compass_current(np.ones(ring.shape[1]), 0)))
-
-    df = pl.DataFrame({
-        "theta": np.angle(ring_pva),
-        "r": np.abs(ring_pva),
-        "state": pl.Series(ring.T, dtype=pl.Array(pl.Float32, len(model.cells))),
-        "dudt": pl.Series(ring_dudt.T, dtype=pl.Array(pl.Float32, len(model.cells))),
-        "angular_velocity": dadt,
-    })
-
-    df.show(None)
-    df.write_parquet(filename)
-
 def plot_equilibria(model: Model) -> np.array:
-    filename = f"results/experiments/{model.name}-equilibria.pdf"
+    filename = f"../results/experiments/{model.name}-equilibria.pdf"
     if os.path.isfile(filename):
         return
 
@@ -387,9 +324,9 @@ def generate_pen_rotation(model: Model) -> np.array:
 
 def result_filename(experiment_name: str, model: Model = None):
     if model is not None:
-        filename = f"results/experiments/{model.name}-{experiment_name}.pdf"
+        filename = f"../results/experiments/{model.name}-{experiment_name}.pdf"
     else:
-        filename = f"results/experiments/{experiment_name}.pdf"
+        filename = f"../results/experiments/{experiment_name}.pdf"
     if os.path.isfile(filename):
         return None
     else:
@@ -615,24 +552,6 @@ def plot_ablations(model: Model):
         plt.tight_layout()
         plt.savefig(filename)
 
-def export_tracking(model: Model, input, darkness_onset=None):
-    filename = f"results/export/tracking_{model.name}_{input}.parquet"
-    if os.path.isfile(filename):
-        return
-
-    time, compass, states = load_or_create(model, "tracking", generate_tracking_data, input=input, darkness_onset=darkness_onset)
-    pva = model.decode(states)
-    df = pl.DataFrame({
-        "time": time,
-        "darkness": time >= (np.max(time) * (darkness_onset if darkness_onset is not None else 1.0)),
-        "heading": compass,
-        "state": pl.Series(states.T, dtype=pl.Array(pl.Float32, len(model.cells))),
-        "theta": np.angle(pva),
-        "r": np.abs(pva),
-    })
-    df.show(None)
-    df.write_parquet(filename)
-
 
 def compare_tracking(models: list[Model], input, darkness_onset=None):
     NAME = f"tracking_{'+'.join([m.name for m in models])}_{input}"
@@ -702,13 +621,6 @@ def analyze(model: Model):
     plot_gain(model)
     plot_pen_rotation(model)
 
-def export_data(model: Model):
-    print("exporting ", model.name)
-    export_trajectories(model)
-    export_equilibria(model)
-    export_manifold(model)
-    export_tracking(model, "compass", darkness_onset=0.5)
-
 
 def comparison_figures(models):
     compare_tracking(models, "compass", darkness_onset=0.5)
@@ -762,18 +674,18 @@ def comparison_figures(models):
 
 
 if __name__ == "__main__":
+    fly_params = np.load("../results/data/tuning/fly-params.npy")
+    bee_params = np.load("../results/data/tuning/bee-params.npy")
+
     # Optimized for low drift:
-    fly_mean_conn = Model("data/fly-cells.csv", f"data/fly-mean-conn.npy", "fly-extrapolated", "darkviolet").tune((np.float64(0.15998587196060582), np.float64(1.4563484775012436), np.float64(-0.125), np.float64(1.0)))
-    fly_truth = Model("data/fly-cells.csv", f"data/fly-truth-simplified.npy", "fly-truth", "orange").tune((np.float64(0.15998587196060582), np.float64(1.4563484775012436), np.float64(-0.125), np.float64(1.0)))
-    bee_mean_conn = Model("data/bee-cells.csv", f"data/bee-mean-conn.npy", "bee-extrapolated", "green").tune((np.float64(0.21209508879201905), np.float64(5.963623316594642), np.float64(-0.125), np.float64(1.0)))
+    fly_mean_conn = Model("../data/connectome/fly-cells.csv", f"../data/connectome/fly-mean-conn.npy", "fly-extrapolated", "darkviolet").tune(fly_params)
+    fly_truth = Model("../data/connectome/fly-cells.csv", f"../data/connectome/fly-truth-simplified.npy", "fly-truth", "orange").tune(fly_params)
+    bee_mean_conn = Model("../data/connectome/bee-cells.csv", f"../data/connectome/bee-mean-conn.npy", "bee-extrapolated", "green").tune(bee_params)
 
     # Map highest rotation speed (1.5) due to PEN inhibition to a typical 'high' speed in compass rotation input (about 0.1 rad/time step).
     fly_mean_conn.rotation_inhibition_factor = 1.5 / 0.1
     fly_truth.rotation_inhibition_factor = 1.5 / 0.1
     bee_mean_conn.rotation_inhibition_factor = 1.5 / 0.1
-
-    export_data(fly_mean_conn)
-    export_data(bee_mean_conn)
 
     analyze(fly_mean_conn)
     analyze(bee_mean_conn)

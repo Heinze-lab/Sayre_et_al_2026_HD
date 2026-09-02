@@ -5,18 +5,13 @@ from mpl_toolkits.mplot3d import Axes3D
 from tqdm.notebook import tqdm
 from cx import extrapolation
 
-CELLS = pl.read_parquet("data/input/bee-cells.parquet")
+CELLS = pl.read_parquet("../data/connectome/bee-cells.parquet")
 
 # Define neuropils
 ROIS = ["PB", "EB"]
 
 COLUMNS_BY_ROI = {
-    #"EB": ["c1", "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9"],
     "EB": ["c1R", "c1L", "c2R", "c2L", "c3R", "c3L", "c4R", "c4L", "c5R", "c5L", "c6R", "c6L", "c7R", "c7L", "c8R", "c8L", "c9R", "c9L"],
-    #"PB": [
-    #    "R10", "R9", "R8", "R7", "R6", "R5", "R4", "R3", "R2", "R1",
-    #    "L1", "L2", "L3", "L4", "L5", "L6", "L7", "L8", "L9", "L10",
-    #],
     "PB": [
         "R10R", "R10L", "R9R", "R9L", "R8R", "R8L", "R7R", "R7L", "R6R", "R6L", "R5R", "R5L", "R4R", "R4L", "R3R", "R3L", "R2R", "R2L", "R1R", "R1L",
         "L1R", "L1L", "L2R", "L2L", "L3R", "L3L", "L4R", "L4L", "L5R", "L5L", "L6R", "L6L", "L7R", "L7L", "L8R", "L8L", "L9R", "L9L", "L10R", "L10L",
@@ -54,22 +49,6 @@ PROJECTIONS = {
             "R9": ["R9R", "R9L", "R10R", "R10L"],
             "L9": ["L9R", "L9L", "L10R", "L10L"],
         }
-        #"EPG": {
-        #    "R1": ["R1", "L1"],
-        #    "L1": ["R1", "L1"],
-        #},
-        #"PEG": {
-        #    "R1": ["R1", "L1"],
-        #    "L1": ["R1", "L1"],
-        #},
-        #"PEN_a": {
-        #    "R9": ["R9", "R10"],
-        #    "L9": ["L9", "L10"],
-        #},
-        #"PEN_b": {
-        #    "R9": ["R9", "R10"],
-        #    "L9": ["L9", "L10"],
-        #}
     },
     "EB": {
         "EPG": {
@@ -140,9 +119,6 @@ PROJECTIONS = {
             "R3": ["c8R", "c8L"],
             "R2": ["c9R", "c9L"],
             "L2": ["c1R", "c1L"],
-            # Doesn't fit sample data:
-            #"R2": ["c9R", "c9L", "c8L", "c8R"],
-            #"L2": ["c1R", "c1L", "c2L", "c2R"],
             "L3": ["c2R", "c2L"],
             "L4": ["c3R", "c3L"],
             "L5": ["c4R", "c4L"],
@@ -174,7 +150,7 @@ PROJECTIONS
 
 cell_types = CELLS["type"].unique()
 conns = (
-    pl.read_csv("data/input/bee_conntable.csv")
+    pl.read_csv("../data/connectome/bee_conntable.csv")
     .with_columns(
         type_pre_col = pl.col("type_pre_col").replace({ "EPG_L_R1L1": "EPG_L1", "EPG_R_R1L1": "EPG_R1" }),
         type_post_col = pl.col("type_post_col").replace({ "EPG_L_R1L1": "EPG_L1", "EPG_R_R1L1": "EPG_R1" }),
