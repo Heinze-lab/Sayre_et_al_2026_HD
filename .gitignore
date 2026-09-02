@@ -1,4 +1,4 @@
 connectome_analysis/data/*.csv
 connectome_analysis/analysis/plots/
-connectome_analysis/.ipynb_checkpoints/
+connectome_analysis/code/.ipynb_checkpoints/
 not_used/
