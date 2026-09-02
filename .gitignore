@@ -1,5 +1,4 @@
-syntables/table_csv_files/
-analysis/.ipynb_checkpoints/
-analysis/plots/
-analysis/edc_tables/
+connectome_analysis/data/*.csv
+connectome_analysis/analysis/plots/
+connectome_analysis/.ipynb_checkpoints/
 not_used/

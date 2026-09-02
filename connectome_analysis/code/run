@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Code Ocean mounts these paths. Fall back to repository-relative results when
+# invoked in a local checkout.
+CODE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ -d /results && -w /results ]]; then
+    RESULTS_DIR=/results
+else
+    RESULTS_DIR="${CODE_DIR}/../results"
+fi
+mkdir -p "${RESULTS_DIR}"
+
+python "${CODE_DIR}/validate_environment.py" > "${RESULTS_DIR}/environment-check.txt"
+cat "${RESULTS_DIR}/environment-check.txt"
