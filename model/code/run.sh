@@ -8,7 +8,7 @@ mkdir -p ../results/experiments
 
 # Extrapolate fly connectome
 if [[ ! -e ../results/extrapolate-fly.ipynb ]]; then
-    uv run jupyter nbconvert \
+    jupyter nbconvert \
     --ExecutePreprocessor.allow_errors=True \
     --ExecutePreprocessor.timeout=-1 \
     --FilesWriter.build_directory=../results \
@@ -18,16 +18,26 @@ fi
 
 # Extrapolate bee connectome
 if [[ ! -e ../results/extrapolate-bee.ipynb ]]; then
-    uv run jupyter nbconvert \
+    jupyter nbconvert \
     --ExecutePreprocessor.allow_errors=True \
     --ExecutePreprocessor.timeout=-1 \
     --FilesWriter.build_directory=../results \
     --to notebook \
     --execute extrapolate-bee.ipynb
 fi
-  
+
+# Extrapolation figures
+if [[ ! -e ../results/extrapolation-figures.ipynb ]]; then
+    jupyter nbconvert \
+    --ExecutePreprocessor.allow_errors=True \
+    --ExecutePreprocessor.timeout=-1 \
+    --FilesWriter.build_directory=../results \
+    --to notebook \
+    --execute extrapolation-figures.ipynb
+fi
+ 
 # Run parameter search
-uv run tune.py
+python3 tune.py
 
 # Run experiments
-uv run experiments.py
+python3 experiments.py

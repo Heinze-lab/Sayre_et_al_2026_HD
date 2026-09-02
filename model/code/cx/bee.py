@@ -198,4 +198,3 @@ for idx_pre, idx_post, pre_name, post_name, type_pre, type_post, subtype_pre, su
 SAMPLE = {"L2L", "L3R", "L3L", "L4R", "L4L", "L5R", "L5L", "L6R", "c1R", "c1L", "c2R", "c2L"}
 MIRRORED_SAMPLE = { mirror_column(c) for c in SAMPLE }
 EXTENDED_SAMPLE = SAMPLE | MIRRORED_SAMPLE
-
