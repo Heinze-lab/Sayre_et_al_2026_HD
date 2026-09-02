@@ -427,12 +427,12 @@ def plot_drift(model: Model, rotation=0, noise=0):
         plt.savefig(filename)
 
 def generate_tracking_data(model: Model, input: str, cell_mask=None, darkness_onset=None):
-    time, compass = np.load(f"data/{input}.npy")
+    time, compass = np.load(f"../data/experiments/{input}.npy")
     states = simulate_tracking(model, compass, dt=DT, noise=0.01, darkness_onset=darkness_onset)
     return time, compass, states
 
 def generate_jumping_tracking_data(model: Model):
-    time, compass = np.load("data/compass-jumps.npy")
+    time, compass = np.load("../experiments/compass-jumps.npy")
     states = simulate_tracking(model, compass, dt=DT, noise=0.01)
     return time, compass, states
 
@@ -678,9 +678,9 @@ if __name__ == "__main__":
     bee_params = np.load("../results/data/tuning/bee-params.npy")
 
     # Optimized for low drift:
-    fly_mean_conn = Model("../data/connectome/fly-cells.csv", f"../data/connectome/fly-mean-conn.npy", "fly-extrapolated", "darkviolet").tune(fly_params)
-    fly_truth = Model("../data/connectome/fly-cells.csv", f"../data/connectome/fly-truth-simplified.npy", "fly-truth", "orange").tune(fly_params)
-    bee_mean_conn = Model("../data/connectome/bee-cells.csv", f"../data/connectome/bee-mean-conn.npy", "bee-extrapolated", "green").tune(bee_params)
+    fly_mean_conn = Model("../data/connectome/fly-cells-grouped.csv", f"../results/data/connectome/fly-mean-conn.npy", "fly-extrapolated", "darkviolet").tune(fly_params)
+    fly_truth = Model("../data/connectome/fly-cells-grouped.csv", f"../results/data/connectome/fly-truth-simplified.npy", "fly-truth", "orange").tune(fly_params)
+    bee_mean_conn = Model("../data/connectome/bee-cells-grouped.csv", f"../results/data/connectome/bee-mean-conn.npy", "bee-extrapolated", "green").tune(bee_params)
 
     # Map highest rotation speed (1.5) due to PEN inhibition to a typical 'high' speed in compass rotation input (about 0.1 rad/time step).
     fly_mean_conn.rotation_inhibition_factor = 1.5 / 0.1
