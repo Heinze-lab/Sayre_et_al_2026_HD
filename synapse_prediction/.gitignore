@@ -1,0 +1,34 @@
+# --- Trained model weights are NOT distributed in this repo ---
+# (patterns are depth-agnostic so they match pipeline/checkpoints/ too)
+net_checkpoint_*
+**/checkpoints/checkpoint
+*.data-*-of-*
+*.index
+
+# Predictions / data / scratch
+output/
+output_*/
+*.zarr/
+*.n5/
+snapshot/
+tensorboard/
+cache/
+temp/
+.predict_blockwise/
+.daisy_logs_*/
+.extract/
+
+# User working config (copy of full_params.example.json)
+full_params.json
+
+# Python
+__pycache__/
+*.pyc
+*.egg-info/
+build/
+dist/
+.ipynb_checkpoints/
+
+# Keep the network graph + tensor-name config (structure, not weights)
+!net.meta
+!net_config.json
