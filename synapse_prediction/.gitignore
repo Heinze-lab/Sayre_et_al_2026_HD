@@ -32,3 +32,4 @@ dist/
 # Keep the network graph + tensor-name config (structure, not weights)
 !net.meta
 !net_config.json
+*.tar.gz

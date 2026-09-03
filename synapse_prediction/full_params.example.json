@@ -69,45 +69,5 @@
     "intensity_shift_max": 0.35033538599938974,
     "var_noise": 0.6643908189056263,
     "GPU_id": 1
-  },
-  "predict_params": {
-    "experiment": "net",
-    "setup": "net",
-    "iteration": 700000,
-    "raw_file": "/PATH/TO/your_raw.zarr",
-    "raw_offset": [
-      152350,
-      107880,
-      204370
-    ],
-    "raw_size": [
-      105100,
-      75820,
-      94590
-    ],
-    "raw_vox": [
-      50,
-      10,
-      10
-    ],
-    "raw_dataset": "raw",
-    "out_directory": "./output/",
-    "out_filename": "net_pred.zarr",
-    "db_host": "mongodb://localhost:27017",
-    "db_name": "YOUR_PREDICT_DB",
-    "configname": "net",
-    "overwrite": false,
-    "num_workers": 10,
-    "out_properties": {
-      "pred_syn_indicator_out": {
-        "dsname": "pred_syn_indicator",
-        "dtype": "uint8",
-        "scale": 255
-      },
-      "pred_partner_vectors": {
-        "dtype": "int8",
-        "scale": 0.5
-      }
-    }
   }
 }

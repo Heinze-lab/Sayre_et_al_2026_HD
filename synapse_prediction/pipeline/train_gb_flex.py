@@ -42,23 +42,20 @@ import tensorflow as tf
 #data_dir_syn = '/home/griffin/github/synapse-detection/make_train/example_in_and_out/test_n.h5'
 
 syn_db_host = 'mongodb://localhost:27017'
-#syn_db_name = 'synapses_megalopta_NO1_cube'
 
-in_rois = [gp.Roi([207300, 126989, 256580], [5000]*3),
-           gp.Roi([194250, 153809, 259630], [5000]*3),
-           gp.Roi([192100, 143689, 235000], [5000]*3),
-           gp.Roi([58350, 82751, 394204], [5000]*3),
-           gp.Roi([66850, 21466, 242861], [5000]*3)]
+# --- Training data ---------------------------------------------------------
+# One ground-truth cube ships with this repo (see ../data/README.md):
+#   * raw volume  NO_cube1.zarr  -> download via data/download_data.sh
+#   * synapse GT graph in MongoDB -> restore via data/restore_gt.sh
+# Each index below pairs a raw zarr, the MongoDB database holding its GT graph,
+# and the ROI (world units / nm) that the GT covers. To train on more cubes,
+# append matching entries to all three lists.
+data_dir_base = os.environ.get(
+    'SYN_DATA_DIR', os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'data'))
 
-data_dir_base = '/mnt/hdd2/DATA/ground_truth_raw/'
-data_dir_syns = [data_dir_base+x for x in 
-                      ['NO_cube1.zarr','NO_cube2.zarr', 'NO_cube3.zarr', 'PB_cube4.zarr', 'FB_cube5.zarr']]
-
-syn_db_names = ['synapses_megalopta_NO1_cube_gb',
-                'synapses_megalopta_NO1_cube_2', 
-                'synapses_megalopta_NO1_cube_3', 
-                'synapses_megalopta_PB1_cube', 
-                'synapses_megalopta_FB1_cube']
+in_rois       = [gp.Roi([207300, 126989, 256580], [5000] * 3)]
+data_dir_syns = [os.path.join(data_dir_base, 'NO_cube1.zarr')]
+syn_db_names  = ['synapses_megalopta_NO1_cube_gb']
 
 def create_source(sample, raw, graphsyn, dummypostsyn, parameter, 
                   data_dir_syn, syn_db_name, in_roi):
@@ -182,11 +179,11 @@ def build_pipeline(parameter, augment=True):
     # Visible devices must be set at program startup
     #       print(e)
     #with tf.device('/gpu:0'):
-    pipeline = tuple([create_source(s, raw, ### FIX HERE
+    pipeline = tuple([create_source(s, raw,
                                     graphsyn, dummypostsyn,
                                     parameter, data_dir_syns[s],
                                     syn_db_names[s], in_rois[s]) for s in
-                      [0,1,2,3,4]])
+                      range(len(in_rois))])
     print(pipeline)
     pipeline += gp.RandomProvider()
     pipeline += gp.Normalize(raw)
