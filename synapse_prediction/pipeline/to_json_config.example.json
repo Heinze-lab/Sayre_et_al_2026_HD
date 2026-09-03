@@ -1,0 +1,1 @@
+{"db_host": "mongodb://localhost:27017", "db_name": "mpb2_3", "nodes_collection": "syn.nodes", "edges_collection": "syn.edges", "output_name": "./PB2_prelim_1.json"}

@@ -1,0 +1,73 @@
+{
+  "train_params": {
+    "input_size": [
+      36,
+      376,
+      376
+    ],
+    "downsample_factors": [
+      [
+        1,
+        3,
+        3
+      ],
+      [
+        1,
+        3,
+        3
+      ],
+      [
+        1,
+        3,
+        3
+      ]
+    ],
+    "fmap_num": 4,
+    "fmap_inc_factor": 5,
+    "unet_model": "dh_unet",
+    "learning_rate": 5e-05,
+    "loss_comb_type": "sum",
+    "m_loss_scale": 1.0,
+    "d_loss_scale": 0.0001,
+    "reject_probability": 0.95,
+    "blob_radius": 20,
+    "max_iteration": 700000,
+    "blob_mode": "ball",
+    "d_scale": 1,
+    "d_blob_radius": 150,
+    "cliprange": [
+      0.0007,
+      0.9993
+    ],
+    "voxel_size": [
+      50,
+      10,
+      10
+    ],
+    "chkpt_loc": "net",
+    "num_workers": 10,
+    "cache_size": 30,
+    "config_name": "net",
+    "working_directory": "."
+  },
+  "augments": {
+    "elastic_spacing": [
+      10,
+      40.24417116323168,
+      36.921808590893804
+    ],
+    "elastic_jitter": [
+      0,
+      6.907377739319237,
+      2.9631216735420267
+    ],
+    "elastic_prob_slip": 0.3436873608041335,
+    "elastic_prob_shift": 0.48370726692012345,
+    "intensity_scale_min": 0.7055091372182611,
+    "intensity_scale_max": 1.111741539359697,
+    "intensity_shift_min": -0.6078380948555009,
+    "intensity_shift_max": 0.35033538599938974,
+    "var_noise": 0.6643908189056263,
+    "GPU_id": 1
+  }
+}
