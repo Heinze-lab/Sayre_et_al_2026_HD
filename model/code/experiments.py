@@ -522,7 +522,7 @@ def plot_ablations(model: Model):
                 c = ax1.quiver(np.angle(ring_pva[::nth]), np.abs(ring_pva[::nth]), np.real(ring_dudt_pva[::nth]), np.imag(ring_dudt_pva[::nth]), dadt[::nth], scale=20, width=0.01, cmap="PRGn", norm=norm) #dadt[::nth])
                 ax1.set_ylim(0, np.max(np.abs(ring_pva)) * 1.25)
 
-            plt.colorbar(c, pad=0.1, shrink=1.0, ax=ax1)
+            plt.colorbar(c, pad=0.1, shrink=1.0, ax=ax1, label="ang. drift")
                 
             ax1.set_yticks([])
             ax1.set_aspect("equal")
@@ -537,6 +537,10 @@ def plot_ablations(model: Model):
             
             if mask == 0:
                 ax3.legend()
+
+            ax2.set_ylabel("ang. vel.")
+            ax3.set_ylabel("cell")
+            ax3.set_yticks([])
 
             if mask == 2**len(cell_types)-1:
                 ax2.set_xlabel("inhibition strength")
@@ -609,7 +613,7 @@ def analyze(model: Model):
     print("analyzing", model.name)
     plot_trajectories(model)
     plot_equilibria(model)
-    #plot_ablations(model)
+    plot_ablations(model)
     #plot_rotation(model)
     #plot_drift(model, noise = 0.01)
     plot_gain(model)
