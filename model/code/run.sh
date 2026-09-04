@@ -5,6 +5,7 @@ mkdir -p ../results/data/connectome
 mkdir -p ../results/data/tuning
 mkdir -p ../results/data/experiments
 mkdir -p ../results/experiments
+mkdir -p ../data/workspace
 
 # Extrapolate fly connectome
 if [[ ! -e ../results/extrapolate-fly.ipynb ]]; then

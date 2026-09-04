@@ -15,7 +15,7 @@ from cx.math import wrap_nans
 
 
 def load_or_create(model: Model, experiment_name: str, generator: Callable[[Model], Any], **kwargs) -> Any:
-    filename = f"../results/data/experiments/{model.name}-{experiment_name}.pkl"
+    filename = f"../data/workspace/{model.name}-{experiment_name}.pkl"
     try:
         with open(filename, "rb") as f:
             print(f"loading {experiment_name} data for {model.name} from {filename}...")
@@ -609,7 +609,7 @@ def analyze(model: Model):
     print("analyzing", model.name)
     plot_trajectories(model)
     plot_equilibria(model)
-    plot_ablations(model)
+    #plot_ablations(model)
     #plot_rotation(model)
     #plot_drift(model, noise = 0.01)
     plot_gain(model)

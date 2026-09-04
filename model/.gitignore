@@ -12,5 +12,6 @@ wheels/
 data/experiments
 data/tuning
 data/old
+data/workspace
 results/*
 results-old/*
