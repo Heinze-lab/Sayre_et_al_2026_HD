@@ -20,6 +20,10 @@ import os
 from cx.model import *
 from loss import *
 
+# Tuning configuration:
+RESOLUTION = 20
+
+
 class Task:
     def __init__(self, model):
         self.model = model
@@ -79,8 +83,6 @@ def choose_params(parameters, loss):
 if __name__ == "__main__":
     fly_model = Model("../data/connectome/fly-cells-grouped.csv", "../results/data/connectome/fly-mean-conn.npy", "fly-mean-conn")
     bee_model = Model("../data/connectome/bee-cells-grouped.csv", "../results/data/connectome/bee-mean-conn.npy", "bee-mean-conn")
-
-    RESOLUTION = 5
 
     print("Running fly grid search...")
     Es = np.logspace(-1, 0, RESOLUTION)
