@@ -3,16 +3,16 @@
 This directory contains code to extrapolate from the synaptic resolution ROI to a full connectivity matrix of the head direction circuit,
 as well as a computational model of a rate-based neural network with connectivity corresponding to the extrapolated connectivity matrix.
 
-
 ## Running
 
-Dependencies and environment setup is handled by [uv](https://docs.astral.sh/uv/);
-see `pyproject.toml` for dependency details.
+Dependencies and environment setup is handled by [uv](https://docs.astral.sh/uv/)
+based on the contents of `pyproject.toml`.
 The directory is set up as a CodeOcean capsule. To install dependencies and
-perform a reproducible run locally, use
+perform a reproducible run on the provided data locally, use
 
     uv run bash run.sh
 
+Dependency installation takes less than a minute, and a full run around 30 minutes.
 Output artifacts will be placed in `../results`.
 
 Alternatively, create a virtual environment using
@@ -21,7 +21,24 @@ Alternatively, create a virtual environment using
 
 to run the notebooks manually.
 
+### Direct dependencies
+
+* Python                  3.12.3
+* ipykernel               7.3.0
+* ipympl                  0.10.0
+* matplotlib              3.11.0
+* numpy                   2.5.0
+* polars                  1.41.2
+* scipy                   1.18.0
+* threadpoolctl           3.6.0
+* tqdm                    4.68.3
+
 Tested on Ubuntu 24.04.2 LTS.
+
+## Data
+
+The input data is located in `../data` and contains cell tables,
+ROI synapse tables for *Megalopta*, corresponding ROI synapse tables for *Drosophila*, as well as the full synapse tables for *Drosophila* based on hemibrain data.
 
 
 ## Extrapolation
