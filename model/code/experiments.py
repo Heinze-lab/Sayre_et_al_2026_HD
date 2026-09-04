@@ -432,7 +432,7 @@ def generate_tracking_data(model: Model, input: str, cell_mask=None, darkness_on
     return time, compass, states
 
 def generate_jumping_tracking_data(model: Model):
-    time, compass = np.load("../experiments/compass-jumps.npy")
+    time, compass = np.load("../data/experiments/compass-jumps.npy")
     states = simulate_tracking(model, compass, dt=DT, noise=0.01)
     return time, compass, states
 
@@ -611,13 +611,7 @@ def analyze(model: Model):
     plot_equilibria(model)
     plot_ablations(model)
     #plot_rotation(model)
-    plot_drift(model, noise = 0.01)
-    #plot_drift(model, 1.0, noise = 0.01)
-    #plot_drift(model, -1.0, noise = 0.1)
-    #plot_drift(model, 1.0, noise=0.05)
-    #plot_drift(model, -1.0, noise=0.05)
-    ##plot_drift(model, 1.0, noise=0.01)
-    ##plot_drift(model, -1.0, noise=0.01)
+    #plot_drift(model, noise = 0.01)
     plot_gain(model)
     plot_pen_rotation(model)
 
@@ -625,7 +619,7 @@ def analyze(model: Model):
 def comparison_figures(models):
     compare_tracking(models, "compass", darkness_onset=0.5)
     compare_tracking(models, "compass-ramping")
-    compare_jump_tracking(models)
+    #compare_jump_tracking(models)
 
     NAME = f"matrices_{'+'.join([m.name for m in models])}_{input}"
     if (filename := result_filename(NAME)):
