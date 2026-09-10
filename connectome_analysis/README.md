@@ -1,42 +1,11 @@
-# Deep conservation of head direction circuits
+# Python notebooks used for analysis of connectomic data
 
-This repository contains the analysis code for Sayre et al. (2026), **“Deep
-conservation of head direction circuits in bees, ants and flies.”** It is laid
-out as a [Code Ocean](https://codeocean.com/) capsule and can also be run with
-Docker or a local Python installation.
+***Synapse tables and other relevant data files can be obtained from: https://www.dropbox.com/scl/fo/sru3wxvbdos49rs68iqpk/AIxyK7mZqQvu4YQQizpVL8c?rlkey=pu1rh5ool7ol4a3buzawgrkgb&st=mferg5at&dl=0***
 
+- bee_fly_statistics.ipynb: Figure 1g; Figure 1k 
 
-| Path | Contents |
-| --- | --- |
-| `code/analysis/` | Notebooks used for the paper's analyses and figures |
-| `code/syntables/` | Notebooks for importing bee and fly synapse tables |
-| `code/utils/` | Data conversion and visualization utilities |
-| `environment/` | Python dependencies and container |
-| `results/` | Output written by the capsule run script |
+- bee_fly_analysis.ipynb: Figure 2j,h-i; Figure 4c-j; Extended Data Figure 4; Extended Data Figure 6 
 
-Synapse tables are kept as capsule data rather than in
-Git; see [`code/syntables/README.md`](code/syntables/README.md)
+- EB_synapse_distributions.ipynb: Figure 2g
 
-
-### Python virtual environment
-
-```bash
-python3.8 -m venv .hd_venv
-source .hd_venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r environment/requirements.txt
-python -m ipykernel install --user --name sayre-hd --display-name "Sayre HD"
-./code/run
-```
-
-## Credentials and external services
-
-Some data-preparation and utility notebooks access CAVE, CATMAID, neuPrint,
-Google Sheets, or SeaTable to import data. These are **not needed by the environment
-t** and analysis from the available / archived tables does not require those services.
-
-## License
-
-The code is released under the [MIT License](LICENSE). Data obtained from an
-external service remains subject to that service's terms and the source data's
-license.
+- electrotonic_distance.ipynb: Figure 2k

@@ -1,24 +1,7 @@
-FROM python:3.8.20-slim-bookworm
+# hash:sha256:56fd9361dbddae3ba63e197d400d330ac2e5007a9d68634ba1fc92ad6721721c
+FROM registry.codeocean.com/codeocean/py-r:python3.12.8-R4.4.2-JupyterLab4.3.5-RStudiorstudio-server-2024.12.1-563-ubuntu22.04
 
-ENV DEBIAN_FRONTEND=noninteractive \
-    PYTHONDONTWRITEBYTECODE=1 \
-    PYTHONUNBUFFERED=1 \
-    MPLBACKEND=Agg
+ARG DEBIAN_FRONTEND=noninteractive
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-        build-essential \
-        git \
-        libgl1 \
-        libglib2.0-0 \
-        libxrender1 \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY environment/requirements.txt /tmp/requirements.txt
-RUN python -m pip install --no-cache-dir --upgrade pip setuptools wheel \
-    && python -m pip install --no-cache-dir -r /tmp/requirements.txt
-
-COPY code /code
-RUN chmod +x /code/run
-
-WORKDIR /code
-CMD ["/code/run"]
+COPY postInstall /
+RUN /postInstall

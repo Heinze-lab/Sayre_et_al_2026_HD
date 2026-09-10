@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+
+# Create conda environment if it does not exist
+if ! conda env list | grep py38; then
+    conda create -y --name py38 python=3.8.1
+fi
+
+# Install dependencies
+conda install -y -n py38 jupyter ipykernel pandas numpy networkx matplotlib seaborn scipy tqdm scikit-learn plotly trimesh conda-forge::mscorefonts
+conda run -n py38 --live-stream pip install navis
+
+# Create a kernel called 'cave'
+conda run -n py38 --live-stream python -m ipykernel install --user --name cave
